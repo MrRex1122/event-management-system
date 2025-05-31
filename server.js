@@ -18,13 +18,14 @@ db.run(`CREATE TABLE IF NOT EXISTS users (
   organization TEXT
 )`);
 
-// Создание таблицы событий, если не существует
+
 db.run(`CREATE TABLE IF NOT EXISTS events (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   title TEXT,
   date TEXT,
   description TEXT,
-  imageUrl TEXT
+  imageUrl TEXT,
+  tickets INTEGER DEFAULT 0
 )`);
 
 // Вход в систему
@@ -55,14 +56,15 @@ app.post('/api/login', (req, res) => {
   );
 });
 
+
 app.post('/api/events', (req, res) => {
-  const { title, date, description, imageUrl } = req.body;
+  const { title, date, description, imageUrl, tickets } = req.body;
   db.run(
-    'INSERT INTO events (title, date, description, imageUrl) VALUES (?, ?, ?, ?)',
-    [title, date, description, imageUrl],
+    'INSERT INTO events (title, date, description, imageUrl, tickets) VALUES (?, ?, ?, ?, ?)',
+    [title, date, description, imageUrl, tickets],
     function (err) {
       if (err) return res.status(500).json({ error: err.message });
-      res.json({ id: this.lastID, title, date, description, imageUrl });
+      res.json({ id: this.lastID, title, date, description, imageUrl, tickets });
     }
   );
 });

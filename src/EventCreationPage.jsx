@@ -6,6 +6,7 @@ function EventCreationPage() {
   const [date, setDate] = useState('');
   const [description, setDescription] = useState('');
   const [imageUrl, setImageUrl] = useState('');
+  const [tickets, setTickets] = useState(0);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -37,29 +38,30 @@ function EventCreationPage() {
     };
     reader.readAsDataURL(file);
   };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch('http://localhost:5000/api/events', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, date, description, imageUrl })
-      });
-      if (response.ok) {
-        alert('Event created successfully!');
-        setTitle('');
-        setDate('');
-        setDescription('');
-        setImageUrl('');
-      } else {
-        alert('Error creating event');
-      }
-    } catch (error) {
-      console.error('Event creation error:', error);
-      alert('Could not connect to the server');
+  
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const response = await fetch('http://localhost:5000/api/events', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, date, description, imageUrl, tickets }) // добавьте tickets
+    });
+    if (response.ok) {
+      alert('Event created successfully!');
+      setTitle('');
+      setDate('');
+      setDescription('');
+      setImageUrl('');
+      setTickets(0); // сбросить поле после создания
+    } else {
+      alert('Error creating event');
     }
-  };
+  } catch (error) {
+    console.error('Event creation error:', error);
+    alert('Could not connect to the server');
+  }
+};
 
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>
@@ -95,6 +97,15 @@ function EventCreationPage() {
             rows={3}
             sx={{ mb: 2 }}
           />
+          <TextField
+            label="Tickets Available"
+            type="number"
+            value={tickets}
+            onChange={e => setTickets(e.target.value)}
+            fullWidth
+            required
+            sx={{ mb: 2 }}
+          />  
           <Button
             variant="contained"
             component="label"
