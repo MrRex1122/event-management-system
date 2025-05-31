@@ -2,10 +2,18 @@ import React, { useState } from 'react';
 import { Box, Paper, Typography, TextField, Button } from '@mui/material';
 import { useNavigate, Navigate } from 'react-router-dom';
 
+
+
+
 function RegistrationPage({ onRegisterSuccess }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [name, setName] = useState(''); // добавьте это
+  const [organization, setOrganization] = useState(''); // и это
   const navigate = useNavigate();
+
+
+
 
   // Если пользователь уже авторизован — редирект на главную
   if (localStorage.getItem('authToken')) {
@@ -18,7 +26,7 @@ function RegistrationPage({ onRegisterSuccess }) {
       const response = await fetch('http://localhost:5000/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email, password, name, organization })
       });
       if (response.ok) {
         alert('Registration successful!');
@@ -57,6 +65,20 @@ function RegistrationPage({ onRegisterSuccess }) {
             fullWidth
             required
             sx={{ mb: 3 }}
+          />
+          <TextField
+            label="Name"
+            value={name}
+            onChange={e => setName(e.target.value)}
+            fullWidth
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            label="Organization"
+            value={organization}
+            onChange={e => setOrganization(e.target.value)}
+            fullWidth
+            sx={{ mb: 2 }}
           />
           <Button type="submit" variant="contained" color="primary" fullWidth>
             Register
