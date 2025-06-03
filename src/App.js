@@ -16,6 +16,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import EventsPage from './EventsPage';
 import { useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import EventDetailsPage from './EventDetailsPage';
 
 const drawerWidth = 240;
 
@@ -179,6 +180,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <EventsPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/events/:id"
+                element={
+                  <ProtectedRoute>
+                    <EventDetailsPage />
                   </ProtectedRoute>
                 }
               />

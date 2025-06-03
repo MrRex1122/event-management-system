@@ -21,6 +21,8 @@ function DashboardPage() {
     .sort((a, b) => new Date(a.date) - new Date(b.date))
     .slice(0, 3);
 
+  const totalRevenue = myEvents.reduce((sum, e) => sum + ((e.tickets || 0) * (e.price || 0)), 0);
+
   return (
     <Box sx={{ p: 3, background: '#f4f6fa', minHeight: '100vh' }}>
       <Typography variant="h4" gutterBottom>
@@ -40,6 +42,14 @@ function DashboardPage() {
             <Typography color="text.secondary">Ticket Sales</Typography>
             <Typography variant="h5">
               {myEvents.reduce((sum, e) => sum + (e.tickets || 0), 0)}
+            </Typography>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <Paper sx={{ p: 2 }}>
+            <Typography color="text.secondary">Revenue</Typography>
+            <Typography variant="h5">
+              ${totalRevenue.toLocaleString('en-AU', { style: 'currency', currency: 'AUD', minimumFractionDigits: 2 }).replace('AUD', '').trim()}
             </Typography>
           </Paper>
         </Grid>
@@ -70,21 +80,37 @@ function DashboardPage() {
                 <Typography color="text.secondary" sx={{ mb: 1 }}>
                   {event.location || 'Event Location'}
                 </Typography>
-                <Typography color="text.secondary" sx={{ fontSize: 14 }}>
-                  {event.date} {/* Можно добавить форматирование даты */}
+                <Typography color="text.secondary" sx={{ fontSize: 14, mb: 1 }}>
+                  {event.date}
                 </Typography>
                 <Typography sx={{ my: 1 }}>{event.description}</Typography>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                   <LinearProgress
                     variant="determinate"
-                    value={event.tickets ? Math.min((event.tickets / 1000) * 100, 100) : 0}
+                    value={
+                      event.totalTickets && event.tickets !== undefined
+                        ? Math.min(((event.totalTickets - event.tickets) / event.totalTickets) * 100, 100)
+                        : 0
+                    }
                     sx={{ flex: 1, mr: 1, height: 8, borderRadius: 5 }}
                   />
-                  <Typography sx={{ minWidth: 60 }} color="text.secondary">
-                    {event.tickets || 0} / 1000
+                  <Typography sx={{ minWidth: 90 }} color="text.secondary">
+                    Sold: {event.totalTickets && event.tickets !== undefined
+                      ? event.totalTickets - event.tickets
+                      : 0}
+                    {' / '}
+                    {event.totalTickets || 0}
                   </Typography>
                 </Box>
-                <Button size="small" variant="outlined" fullWidth>
+                <Typography color="text.secondary" sx={{ fontSize: 14, mb: 1 }}>
+                  Price: {event.price ? `$${event.price} AUD` : 'Free'}
+                </Typography>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  fullWidth
+                  onClick={() => navigate(`/events/${event.id}`)}
+                >
                   View details
                 </Button>
               </CardContent>
@@ -98,23 +124,20 @@ function DashboardPage() {
         <Typography variant="h6" sx={{ mb: 2 }}>
           Recent Activity
         </Typography>
-        <Box sx={{ mb: 1 }}>
-          <Typography variant="body2">
-            New ticket sale for Summer Music Festival
-          </Typography>
-          <Typography variant="caption" color="text.secondary">
-            5 minutes ago
-          </Typography>
-        </Box>
-        <Box sx={{ mb: 1 }}>
-          <Typography variant="body2">
-            You updated Tech Conference 2023 details
-          </Typography>
-          <Typography variant="caption" color="text.secondary">
-            2 hours ago
-          </Typography>
-        </Box>
-        {/* Добавьте еще активности по желанию */}
+        {myEvents
+          .slice() // копия массива
+          .sort((a, b) => new Date(b.date) - new Date(a.date)) // сортировка по дате (новые сверху)
+          .slice(0, 5) // показываем только 5 последних
+          .map(event => (
+            <Box sx={{ mb: 1 }} key={event.id}>
+              <Typography variant="body2">
+                Created event: <strong>{event.title}</strong>
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                {event.date}
+              </Typography>
+            </Box>
+          ))}
       </Paper>
     </Box>
   );

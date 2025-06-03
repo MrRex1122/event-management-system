@@ -25,7 +25,10 @@ db.run(`CREATE TABLE IF NOT EXISTS events (
   date TEXT,
   description TEXT,
   imageUrl TEXT,
-  tickets INTEGER DEFAULT 0
+  tickets INTEGER DEFAULT 0,
+  totalTickets INTEGER DEFAULT 0,
+  price REAL DEFAULT 0,
+  createdAt TEXT
 )`);
 
 // Вход в систему
@@ -57,18 +60,35 @@ app.post('/api/login', (req, res) => {
 });
 
 
+
+
+app.post('/api/events/:id/buy', (req, res) => {
+  const { id } = req.params;
+  const { quantity } = req.body;
+  db.get('SELECT tickets FROM events WHERE id = ?', [id], (err, event) => {
+    if (err || !event) return res.status(404).json({ error: 'Event not found' });
+    if (event.tickets < quantity) return res.status(400).json({ error: 'Not enough tickets' });
+    db.run('UPDATE events SET tickets = tickets - ? WHERE id = ?', [quantity, id], function (err2) {
+      if (err2) return res.status(500).json({ error: err2.message });
+      res.json({ success: true });
+    });
+  });
+});
+
 app.post('/api/events', (req, res) => {
-  const { title, date, description, imageUrl, tickets } = req.body;
+  const { title, date, description, imageUrl, tickets, totalTickets, price } = req.body;
+  const createdAt = new Date().toISOString();
   db.run(
-    'INSERT INTO events (title, date, description, imageUrl, tickets) VALUES (?, ?, ?, ?, ?)',
-    [title, date, description, imageUrl, tickets],
+    'INSERT INTO events (title, date, description, imageUrl, tickets, totalTickets, price, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+    [title, date, description, imageUrl, tickets, totalTickets, price, createdAt],
     function (err) {
       if (err) return res.status(500).json({ error: err.message });
-      res.json({ id: this.lastID, title, date, description, imageUrl, tickets });
+      res.json({ id: this.lastID, title, date, description, imageUrl, tickets, totalTickets, price, createdAt });
     }
   );
 });
 
+// Добавьте этот обработчик для получения всех событий:
 app.get('/api/events', (req, res) => {
   db.all('SELECT * FROM events', (err, rows) => {
     if (err) return res.status(500).json({ error: err.message });

@@ -7,6 +7,7 @@ function EventCreationPage() {
   const [description, setDescription] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [tickets, setTickets] = useState(0);
+  const [price, setPrice] = useState('');
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -45,7 +46,7 @@ const handleSubmit = async (e) => {
     const response = await fetch('http://localhost:5000/api/events', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title, date, description, imageUrl, tickets }) // добавьте tickets
+      body: JSON.stringify({ title, date, description, imageUrl, tickets, totalTickets: tickets, price })
     });
     if (response.ok) {
       alert('Event created successfully!');
@@ -54,6 +55,7 @@ const handleSubmit = async (e) => {
       setDescription('');
       setImageUrl('');
       setTickets(0); // сбросить поле после создания
+      setPrice(''); // сбросить поле
     } else {
       alert('Error creating event');
     }
@@ -105,7 +107,19 @@ const handleSubmit = async (e) => {
             fullWidth
             required
             sx={{ mb: 2 }}
-          />  
+          /> 
+          <TextField
+            label="Ticket Price (AUD)"
+            type="number"
+            value={price}
+            onChange={e => setPrice(e.target.value)}
+            fullWidth
+            required
+            sx={{ mb: 2 }}
+            InputProps={{
+              startAdornment: <span style={{ marginRight: 4 }}>$</span>
+            }}
+          />
           <Button
             variant="contained"
             component="label"

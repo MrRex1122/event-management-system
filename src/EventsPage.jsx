@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Card, CardContent, Grid, TextField } from '@mui/material';
+import { Box, Typography, Card, CardContent, Grid, TextField, Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 function EventsPage() {
   const [events, setEvents] = useState([]);
   const [search, setSearch] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch('http://localhost:5000/api/events')
@@ -46,8 +48,16 @@ function EventsPage() {
                 <Typography color="text.secondary">{event.date}</Typography>
                 <Typography sx={{ mt: 1 }}>{event.description}</Typography>
                 <Typography color="text.secondary">
-                  Tickets: {event.tickets}
+                  Tickets: {event.tickets} | Price: {event.price ? `$${event.price} AUD` : 'Free'}
                 </Typography>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  fullWidth
+                  onClick={() => navigate(`/events/${event.id}`)}
+                >
+                  View details
+                </Button>
               </CardContent>
             </Card>
           </Grid>
