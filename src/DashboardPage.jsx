@@ -19,12 +19,12 @@ function DashboardPage() {
   const upcomingEvents = [...myEvents]
     .filter(event => event.date)
     .sort((a, b) => new Date(a.date) - new Date(b.date))
-    .slice(0, 3);
+    .slice(0, 5);
 
   const totalRevenue = myEvents.reduce((sum, e) => sum + ((e.tickets || 0) * (e.price || 0)), 0);
 
   return (
-    <Box sx={{ p: 3, background: '#f4f6fa', minHeight: '100vh' }}>
+    <Box sx={{ p: 5, background: '#f4f6fa', minHeight: '100vh' }}>
       <Typography variant="h4" gutterBottom>
         Dashboard Overview
       </Typography>
@@ -41,7 +41,14 @@ function DashboardPage() {
           <Paper sx={{ p: 2 }}>
             <Typography color="text.secondary">Ticket Sales</Typography>
             <Typography variant="h5">
-              {myEvents.reduce((sum, e) => sum + (e.tickets || 0), 0)}
+              {myEvents.reduce(
+                (sum, e) =>
+                  sum +
+                  (e.totalTickets && e.tickets !== undefined
+                    ? e.totalTickets - e.tickets
+                    : 0),
+                0
+              )}
             </Typography>
           </Paper>
         </Grid>
@@ -49,77 +56,132 @@ function DashboardPage() {
           <Paper sx={{ p: 2 }}>
             <Typography color="text.secondary">Revenue</Typography>
             <Typography variant="h5">
-              ${totalRevenue.toLocaleString('en-AU', { style: 'currency', currency: 'AUD', minimumFractionDigits: 2 }).replace('AUD', '').trim()}
+              $
+              {myEvents
+                .reduce(
+                  (sum, e) =>
+                    sum +
+                    (e.totalTickets && e.tickets !== undefined && e.price
+                      ? (e.totalTickets - e.tickets) * e.price
+                      : 0),
+                  0
+                )
+                .toLocaleString('en-AU', {
+                  style: 'currency',
+                  currency: 'AUD',
+                  minimumFractionDigits: 2,
+                })
+                .replace('AUD', '')
+                .trim()}
             </Typography>
           </Paper>
         </Grid>
-        {/* Добавьте еще карточки статистики по желанию */}
-      </Grid>
 
-      <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
-        <Typography variant="h6">Upcoming Events</Typography>
-        <Button variant="contained" onClick={() => navigate('/create-event')}>
-          + Create Event
-        </Button>
-      </Stack>
+          </Grid>
 
-      <Grid container spacing={2} sx={{ mb: 4 }}>
-        {upcomingEvents.map(event => (
-          <Grid item xs={12} md={4} key={event.id}>
-            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+          <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
+            <Typography variant="h6">Upcoming Events</Typography>
+            <Button variant="contained" onClick={() => navigate('/create-event')}>
+              + Create Event
+            </Button>
+          </Stack>
+
+          <Grid container spacing={2} sx={{ mb: 4, justifyContent: 'center' }}>
+            {upcomingEvents.map(event => (
+              <Grid
+            item
+            xs={12}
+            md={4}
+            key={event.id}
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              width: { xs: '100%', sm: '50%', md: '33%' },
+              maxWidth: 350,
+            }}
+              >
+            <Card
+              sx={{
+                width: '100%',
+                height: 600,
+                display: 'flex',
+                flexDirection: 'column',
+              }}
+            >
               {event.imageUrl && (
                 <Box
                   component="img"
                   src={event.imageUrl}
                   alt={event.title}
-                  sx={{ width: '100%', height: 180, objectFit: 'cover' }}
+                  sx={{
+                    width: '100%',
+                    height: 300,
+                    objectFit: 'contain', // Показывает всё изображение без обрезки
+                    background: '#fff',   // Белый фон для прозрачных картинок
+                    display: 'block',
+                    mx: 'auto'
+                  }}
                 />
               )}
-              <CardContent sx={{ flex: 1 }}>
+              <CardContent sx={{ flex: 1, display: 'flex', flexDirection: 'column', p: 2 }}>
                 <Typography variant="h6">{event.title}</Typography>
                 <Typography color="text.secondary" sx={{ mb: 1 }}>
-                  {event.location || 'Event Location'}
+              {event.location || 'Event Location'}
                 </Typography>
                 <Typography color="text.secondary" sx={{ fontSize: 14, mb: 1 }}>
-                  {event.date}
+              {event.date}
                 </Typography>
-                <Typography sx={{ my: 1 }}>{event.description}</Typography>
+                <Typography
+              sx={{
+                my: 1,
+                flexGrow: 1,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                display: '-webkit-box',
+                WebkitLineClamp: 5,
+                WebkitBoxOrient: 'vertical',
+                minHeight: '60px',
+                maxHeight: '60px',
+              }}
+                >
+              {event.description}
+                </Typography>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                  <LinearProgress
-                    variant="determinate"
-                    value={
-                      event.totalTickets && event.tickets !== undefined
-                        ? Math.min(((event.totalTickets - event.tickets) / event.totalTickets) * 100, 100)
-                        : 0
-                    }
-                    sx={{ flex: 1, mr: 1, height: 8, borderRadius: 5 }}
-                  />
-                  <Typography sx={{ minWidth: 90 }} color="text.secondary">
-                    Sold: {event.totalTickets && event.tickets !== undefined
-                      ? event.totalTickets - event.tickets
-                      : 0}
-                    {' / '}
-                    {event.totalTickets || 0}
-                  </Typography>
+              <LinearProgress
+                variant="determinate"
+                value={
+                  event.totalTickets && event.tickets !== undefined
+                ? Math.min(((event.totalTickets - event.tickets) / event.totalTickets) * 100, 100)
+                : 0
+                }
+                sx={{ flex: 1, mr: 1, height: 8, borderRadius: 5 }}
+              />
+              <Typography sx={{ minWidth: 90 }} color="text.secondary">
+                Sold: {event.totalTickets && event.tickets !== undefined
+                  ? event.totalTickets - event.tickets
+                  : 0}
+                {' / '}
+                {event.totalTickets || 0}
+              </Typography>
                 </Box>
                 <Typography color="text.secondary" sx={{ fontSize: 14, mb: 1 }}>
-                  Price: {event.price ? `$${event.price} AUD` : 'Free'}
+              Price: {event.price ? `$${event.price} AUD` : 'Free'}
                 </Typography>
                 <Button
-                  size="small"
-                  variant="outlined"
-                  fullWidth
-                  onClick={() => navigate(`/events/${event.id}`)}
+              size="small"
+              variant="outlined"
+              fullWidth
+              onClick={() => navigate(`/events/${event.id}`)}
                 >
-                  View details
+              View details
                 </Button>
               </CardContent>
             </Card>
+              </Grid>
+            ))}
           </Grid>
-        ))}
-      </Grid>
 
-      {/* Recent Activity (пример) */}
+          {/* Recent Activity (пример) */}
       <Paper sx={{ p: 2 }}>
         <Typography variant="h6" sx={{ mb: 2 }}>
           Recent Activity

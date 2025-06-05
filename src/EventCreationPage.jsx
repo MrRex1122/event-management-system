@@ -54,8 +54,8 @@ const handleSubmit = async (e) => {
       setDate('');
       setDescription('');
       setImageUrl('');
-      setTickets(0); // сбросить поле после создания
-      setPrice(''); // сбросить поле
+      setTickets(0); 
+      setPrice('');
     } else {
       alert('Error creating event');
     }

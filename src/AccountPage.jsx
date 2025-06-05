@@ -44,7 +44,7 @@ function AccountPage() {
           fullWidth
           onClick={handleLogout}
         >
-          Выйти
+          Sign Out
         </Button>
       </Paper>
     </Box>

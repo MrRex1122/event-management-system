@@ -7,7 +7,7 @@ function AuthPage() {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  // Если пользователь уже авторизован — редирект на главную
+  // after autorisation direct to main page
   if (localStorage.getItem('authToken')) {
     return <Navigate to="/" replace />;
   }
@@ -23,7 +23,7 @@ function AuthPage() {
       if (response.ok) {
         const data = await response.json();
         localStorage.setItem('authToken', data.token);
-        navigate('/'); // редирект на главную
+        navigate('/'); // main page redirect
       } else {
         alert('Authentication error');
       }
@@ -68,7 +68,7 @@ function AuthPage() {
           sx={{ mt: 2 }}
           onClick={() => navigate('/register')}
         >
-          Нет аккаунта? Зарегистрироваться
+          Register
         </Button>
       </Paper>
     </Box>

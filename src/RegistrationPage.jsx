@@ -5,6 +5,17 @@ import { useNavigate, Navigate } from 'react-router-dom';
 
 
 
+/**
+ * RegistrationPage component renders a user registration form.
+ * Allows users to register by providing email, password, name, and organization.
+ * On successful registration, redirects to the main page and optionally calls onRegisterSuccess callback.
+ * If the user is already authenticated (authToken in localStorage), redirects to the main page.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Function} [props.onRegisterSuccess] - Optional callback invoked after successful registration.
+ * @returns {JSX.Element} The rendered registration form component.
+ */
 function RegistrationPage({ onRegisterSuccess }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

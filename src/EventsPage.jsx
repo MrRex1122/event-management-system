@@ -31,22 +31,60 @@ function EventsPage() {
         fullWidth
         sx={{ mb: 3 }}
       />
-      <Grid container spacing={2}>
+      <Grid container spacing={2} justifyContent="center">
         {filteredEvents.map(event => (
-          <Grid item xs={12} md={4} key={event.id}>
-            <Card>
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            md={4}
+            key={event.id}
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+            }}
+          >
+            <Card
+              sx={{
+                width: 340, // fixed width
+                height: 370, // fixed height
+                display: 'flex',
+                flexDirection: 'column',
+              }}
+            >
               {event.imageUrl && (
                 <Box
                   component="img"
                   src={event.imageUrl}
                   alt={event.title}
-                  sx={{ width: '100%', height: 180, objectFit: 'cover' }}
+                  sx={{
+                    width: '100%',
+                    height: 180,
+                    objectFit: 'contain',
+                    background: '#fff',
+                    display: 'block',
+                    mx: 'auto',
+                  }}
                 />
               )}
-              <CardContent>
+              <CardContent sx={{ flex: 1, display: 'flex', flexDirection: 'column', p: 2 }}>
                 <Typography variant="h6">{event.title}</Typography>
                 <Typography color="text.secondary">{event.date}</Typography>
-                <Typography sx={{ mt: 1 }}>{event.description}</Typography>
+                <Typography
+                  sx={{
+                    my: 1,
+                    flexGrow: 1,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    display: '-webkit-box',
+                    WebkitLineClamp: 3,
+                    WebkitBoxOrient: 'vertical',
+                    minHeight: '60px',
+                    maxHeight: '60px',
+                  }}
+                >
+                  {event.description}
+                </Typography>
                 <Typography color="text.secondary">
                   Tickets: {event.tickets} | Price: {event.price ? `$${event.price} AUD` : 'Free'}
                 </Typography>
