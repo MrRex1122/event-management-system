@@ -17,6 +17,7 @@ import EventsPage from './EventsPage';
 import { useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import EventDetailsPage from './EventDetailsPage';
+import AnalyticsPage from './AnalyticsPage';
 
 const drawerWidth = 240;
 
@@ -26,7 +27,6 @@ function SideNav() {
   const [user, setUser] = useState({ name: '', role: '', initials: '' });
 
   useEffect(() => {
-    // Получаем имя пользователя из API
     const token = localStorage.getItem('authToken');
     if (token) {
       fetch('http://localhost:5000/api/me', {
@@ -67,7 +67,21 @@ function SideNav() {
           component={Link}
           to="/"
           selected={location.pathname === '/'}
-          sx={{ borderRadius: 1, mb: 0.5 }}
+          sx={{
+            borderRadius: 1,
+            mb: 0.5,
+            color: '#fff',
+            '&.Mui-selected': {
+              background: 'rgba(255,255,255,0.12)',
+              color: '#fff',
+              '& .MuiListItemIcon-root': { color: '#fff' }
+            },
+            '&:hover': {
+              background: 'rgba(255,255,255,0.08)',
+              color: '#fff',
+              '& .MuiListItemIcon-root': { color: '#fff' }
+            }
+          }}
         >
           <ListItemIcon sx={{ color: '#fff' }}><HomeIcon /></ListItemIcon>
           <ListItemText primary="Overview" />
@@ -76,7 +90,21 @@ function SideNav() {
           component={Link}
           to="/events"
           selected={location.pathname === '/events'}
-          sx={{ borderRadius: 1, mb: 0.5 }}
+          sx={{
+            borderRadius: 1,
+            mb: 0.5,
+            color: '#fff',
+            '&.Mui-selected': {
+              background: 'rgba(255,255,255,0.12)',
+              color: '#fff',
+              '& .MuiListItemIcon-root': { color: '#fff' }
+            },
+            '&:hover': {
+              background: 'rgba(255,255,255,0.08)',
+              color: '#fff',
+              '& .MuiListItemIcon-root': { color: '#fff' }
+            }
+          }}
         >
           <ListItemIcon sx={{ color: '#fff' }}><EventIcon /></ListItemIcon>
           <ListItemText primary="Events" />
@@ -85,7 +113,21 @@ function SideNav() {
           component={Link}
           to="/analytics"
           selected={location.pathname === '/analytics'}
-          sx={{ borderRadius: 1, mb: 0.5 }}
+          sx={{
+            borderRadius: 1,
+            mb: 0.5,
+            color: '#fff',
+            '&.Mui-selected': {
+              background: 'rgba(255,255,255,0.12)',
+              color: '#fff',
+              '& .MuiListItemIcon-root': { color: '#fff' }
+            },
+            '&:hover': {
+              background: 'rgba(255,255,255,0.08)',
+              color: '#fff',
+              '& .MuiListItemIcon-root': { color: '#fff' }
+            }
+          }}
         >
           <ListItemIcon sx={{ color: '#fff' }}><BarChartIcon /></ListItemIcon>
           <ListItemText primary="Analytics" />
@@ -94,7 +136,21 @@ function SideNav() {
           component={Link}
           to="/customers"
           selected={location.pathname === '/customers'}
-          sx={{ borderRadius: 1, mb: 0.5 }}
+          sx={{
+            borderRadius: 1,
+            mb: 0.5,
+            color: '#fff',
+            '&.Mui-selected': {
+              background: 'rgba(255,255,255,0.12)',
+              color: '#fff',
+              '& .MuiListItemIcon-root': { color: '#fff' }
+            },
+            '&:hover': {
+              background: 'rgba(255,255,255,0.08)',
+              color: '#fff',
+              '& .MuiListItemIcon-root': { color: '#fff' }
+            }
+          }}
         >
           <ListItemIcon sx={{ color: '#fff' }}><PeopleIcon /></ListItemIcon>
           <ListItemText primary="Customers" />
@@ -103,7 +159,21 @@ function SideNav() {
           component={Link}
           to="/settings"
           selected={location.pathname === '/settings'}
-          sx={{ borderRadius: 1, mb: 0.5 }}
+          sx={{
+            borderRadius: 1,
+            mb: 0.5,
+            color: '#fff',
+            '&.Mui-selected': {
+              background: 'rgba(255,255,255,0.12)',
+              color: '#fff',
+              '& .MuiListItemIcon-root': { color: '#fff' }
+            },
+            '&:hover': {
+              background: 'rgba(255,255,255,0.08)',
+              color: '#fff',
+              '& .MuiListItemIcon-root': { color: '#fff' }
+            }
+          }}
         >
           <ListItemIcon sx={{ color: '#fff' }}><SettingsIcon /></ListItemIcon>
           <ListItemText primary="Settings" />
@@ -122,14 +192,47 @@ function SideNav() {
           variant="outlined"
           color="inherit"
           fullWidth
-          sx={{ mb: 1, color: '#fff', borderColor: '#fff', textTransform: 'none' }}
+          sx={{
+            mb: 1,
+            color: '#fff',
+            borderColor: '#fff',
+            textTransform: 'none',
+            '&:hover': {
+              backgroundColor: 'rgba(255,255,255,0.08)',
+              borderColor: '#fff',
+              color: '#fff',
+            },
+            '&:active': {
+              backgroundColor: 'rgba(255,255,255,0.16)',
+              borderColor: '#fff',
+              color: '#fff',
+            },
+            '&:focus': {
+              borderColor: '#fff',
+              color: '#fff',
+            }
+          }}
           onClick={() => navigate('/account')}
         >
           Account
         </Button>
         <Button
           startIcon={<LogoutIcon />}
-          sx={{ color: '#fff', textTransform: 'none' }}
+          sx={{
+            color: '#fff',
+            textTransform: 'none',
+            '&:hover': {
+              backgroundColor: 'rgba(255,255,255,0.08)',
+              color: '#fff',
+            },
+            '&:active': {
+              backgroundColor: 'rgba(255,255,255,0.16)',
+              color: '#fff',
+            },
+            '&:focus': {
+              color: '#fff',
+            }
+          }}
           onClick={() => {
             localStorage.removeItem('authToken');
             navigate('/login');
@@ -191,7 +294,15 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-          </Routes>
+              <Route
+                path="/analytics"
+                element={
+                  <ProtectedRoute>
+                    <AnalyticsPage />
+                  </ProtectedRoute>
+                }
+              />
+            </Routes>
         </Box>
       </Box>
     </Router>
